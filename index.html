@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Device and Screen</title>
+
+  <style>
+    * {
+      font-family: Arial;
+      color: #29293d;
+    }
+
+    ::selection {
+      background-color: #ccc;
+    }
+
+    body {
+      margin: 2rem;
+      display: grid;
+      gap: 2rem;
+      background-color: #29293d;
+    }
+
+    @media (min-width: 640px) {
+      body {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1024px) {
+      body {
+        font-size: 1.125rem;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    h1 {
+      text-align: center;
+      grid-column: 1 / -1;
+      font-weight: 300;
+      margin: 0;
+      color: #e0e0eb;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 300;
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      background-color: #29293d;
+      color: #fff;
+      letter-spacing: 0.05rem;
+    }
+
+    span {
+      font-weight: 600;
+    }
+
+    span.small {
+      font-size: 0.875rem;
+    }
+
+    div {
+      background-color: #e0e0eb;
+      padding: 1rem;
+      border-radius: 0.125rem;
+    }
+
+    @media (orientation: landscape) {
+      .portrait {
+        display: none;
+      }
+    }
+
+    @media (orientation: portrait) {
+      .landscape {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Device and Screen</h1>
+
+  <div>
+    <h2>Viewport Width</h2>
+    <p><span id="viewportWidth"></span>px</p>
+    <p><span id="viewportWidthEm"></span>em</p>
+  </div>
+
+  <div>
+    <h2>Render</h2>
+    <p>Root font size: <span id="rootFontSize"></span>px</p>
+    <p>Deice aspect ratio: <span id="deviceAspectRatio"></span></p>
+    <p>Orientation: <span class="portrait">portrait</span><span class="landscape">landscape</span></p>
+    <p>Pixel ratio: <span id="pixelRatio"></span></p>
+  </div>
+
+  <div>
+    <h2>Size</h2>
+    <p>Screen width: <span id="screenWidth"></span>px</p>
+    <p>Screen height: <span id="screenHeight"></span>px</p>
+  </div>
+
+  <div>
+    <h2>Density</h2>
+    <p><span id="jsdpi"></span>dpi</p>
+    <p><span id="jsdppx"></span>dppx</p>
+    <p><span id="jsdpcm"></span>dpcm</p>
+  </div>
+
+  <div>
+    <h2>User Agent</h2>
+    <p>User agent: <span id="userAgent" class="small"></span></p>
+  </div>
+
+  <script>
+    // root font size (px)
+    const rootFontSize = parseInt(window.getComputedStyle(document.body, null).getPropertyValue("font-size"));
+    document.getElementById("rootFontSize").innerText = rootFontSize;
+
+    // js screen width and height (px)
+    document.getElementById("screenWidth").innerText = screen.width;
+    document.getElementById("screenHeight").innerText = screen.height;
+
+    // https://github.com/ryanve/res/blob/master/res.js
+    !(function (root, name, make) {
+      if (typeof module != "undefined" && module.exports)
+        module.exports = make();
+      else root[name] = make();
+    })(this, "res", function () {
+      var one = { dpi: 96, dpcm: 96 / 2.54 };
+      function ie() {
+        return Math.sqrt(screen.deviceXDPI * screen.deviceYDPI) / one.dpi;
+      }
+      function dppx() {
+        // devicePixelRatio: Webkit (Chrome/Android/Safari), Opera (Presto 2.8+), FF 18+
+        return typeof window == "undefined"
+          ? 0
+          : +window.devicePixelRatio || ie() || 0;
+      }
+      function dpcm() {
+        return dppx() * one.dpcm;
+      }
+      function dpi() {
+        return dppx() * one.dpi;
+      }
+
+      return { dppx: dppx, dpi: dpi, dpcm: dpcm };
+    });
+    // end res
+
+    // resolution in dpi, dppx, and dpcm
+    const jsdpi = res.dpi().toFixed(2);
+    const jsdppx = res.dppx().toFixed(2);
+    const jsdpcm = res.dpcm().toFixed(2);
+    document.getElementById("jsdpi").innerText = jsdpi;
+    document.getElementById("jsdppx").innerText = jsdppx;
+    document.getElementById("jsdpcm").innerText = jsdpcm;
+
+    // device aspect ratio
+    const deviceAspectRatio = (screen.width / screen.height).toFixed(2);
+    document.getElementById("deviceAspectRatio").innerText = deviceAspectRatio;
+
+    // pixel ratio
+    const pixelRatio = (window.devicePixelRatio || window.screen.availWidth / document.documentElement.clientWidth).toFixed(4);
+    document.getElementById("pixelRatio").innerText = pixelRatio;
+
+    // user agent
+    const userAgent = navigator.userAgent;
+    document.getElementById("userAgent").innerText = userAgent;
+
+    function updateViewportData() {
+      // viewport width (px) todo check if null
+      const viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth);
+      document.getElementById("viewportWidth").innerText = viewportWidth;
+
+      // viewport width em
+      const viewportWidthEm = (viewportWidth / rootFontSize).toFixed(0);
+      document.getElementById("viewportWidthEm").innerText = viewportWidthEm;
+    }
+    window.addEventListener("load", updateViewportData);
+    window.addEventListener("resize", updateViewportData);
+  </script>
+</body>
+
+</html>
