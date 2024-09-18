@@ -101,6 +101,7 @@
     <p>Deice aspect ratio: <span id="deviceAspectRatio"></span></p>
     <p>Orientation: <span class="portrait">portrait</span><span class="landscape">landscape</span></p>
     <p>Pixel ratio: <span id="pixelRatio"></span></p>
+    <p>Color depth: <span id="colorDepth"></span></p>
   </div>
 
   <div>
@@ -172,6 +173,10 @@
     // pixel ratio
     const pixelRatio = (window.devicePixelRatio || window.screen.availWidth / document.documentElement.clientWidth).toFixed(4);
     document.getElementById("pixelRatio").innerText = pixelRatio;
+
+    // color depth
+    const colorDepth = screen.colorDepth;
+    document.getElementById("colorDepth").innerText = colorDepth;
 
     // user agent
     const userAgent = navigator.userAgent;
