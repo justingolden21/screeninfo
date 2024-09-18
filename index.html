@@ -128,6 +128,20 @@
     <p>Timezone: <span id="timezone"></span></p>
   </div>
 
+  <div>
+    <h2>Network</h2>
+    <p>Connection type: <span id="connectionType"></span></p>
+    <p>Round trip time (RTT): <span id="roundTripTime"></span>ms</p>
+    <p>Downlink: <span id="downlink"></span>Mbps</p>
+  </div>
+
+  <div>
+    <h2>Performance</h2>
+    <p>Device memory: <span id="deviceMemory"></span>MB</p>
+    <p>Number of logical processors: <span id="numLogicalProcessors"></span></p>
+    <p>Battery: <span id="battery"></span></p>
+  </div>
+
   <script>
     // root font size (px)
     const rootFontSize = parseInt(window.getComputedStyle(document.body, null).getPropertyValue("font-size"));
@@ -195,6 +209,31 @@
     // timezone
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     document.getElementById("timezone").innerText = timezone;
+
+    // network
+    const connectionType = navigator.connection.effectiveType;
+    document.getElementById("connectionType").innerText = connectionType;
+
+    const roundTripTime = navigator.connection.rtt;
+    document.getElementById("roundTripTime").innerText = roundTripTime;
+
+    const downlink = navigator.connection.downlink;
+    document.getElementById("downlink").innerText = downlink;
+
+    // performance
+    const deviceMemory = navigator.deviceMemory;
+    document.getElementById("deviceMemory").innerText = deviceMemory;
+
+    const numLogicalProcessors = navigator.hardwareConcurrency;
+    document.getElementById("numLogicalProcessors").innerText = numLogicalProcessors;
+
+    if ('getBattery' in navigator) {
+      navigator.getBattery().then(function (battery) {
+        document.getElementById("battery").innerText = battery.level * 100 + '%' + (battery.charging ? ' charging' : '');
+      });
+    } else {
+      document.getElementById("battery").innerText = 'N/A';
+    }
 
     function updateViewportData() {
       // viewport width (px) todo check if null
