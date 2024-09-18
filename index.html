@@ -122,6 +122,12 @@
     <p>User agent: <span id="userAgent" class="small"></span></p>
   </div>
 
+  <div>
+    <h2>Language and TimeZone</h2>
+    <p>Language: <span id="language"></span></p>
+    <p>Timezone: <span id="timezone"></span></p>
+  </div>
+
   <script>
     // root font size (px)
     const rootFontSize = parseInt(window.getComputedStyle(document.body, null).getPropertyValue("font-size"));
@@ -181,6 +187,14 @@
     // user agent
     const userAgent = navigator.userAgent;
     document.getElementById("userAgent").innerText = userAgent;
+
+    // language
+    const language = navigator.language;
+    document.getElementById("language").innerText = language;
+
+    // timezone
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    document.getElementById("timezone").innerText = timezone;
 
     function updateViewportData() {
       // viewport width (px) todo check if null
